@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zach - Engineer</title>
+    <title>zachvier</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -13,24 +13,26 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background-color: #121212; /* Modern dark background */
-            color: #e0e0e0; /* Subtle off-white text */
+            background-color: #121212;
+            color: #e0e0e0;
             line-height: 1.6;
             text-align: center;
-            overflow: hidden; /* Prevent scrollbars during animation */
+            overflow-x: hidden;
         }
 
         .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
             padding: 2rem;
-            max-width: 600px;
-            opacity: 0; /* Start hidden */
-            animation: fadeIn 1.5s ease-out forwards; /* Fade-in effect */
+            max-width: 1000px;
+            animation: fadeIn 1.5s ease-out forwards;
         }
 
         @keyframes fadeIn {
             0% {
                 opacity: 0;
-                transform: translateY(20px); /* Slight downward shift */
+                transform: translateY(20px);
             }
             100% {
                 opacity: 1;
@@ -38,10 +40,83 @@
             }
         }
 
-        .container p {
-            margin: 0 0 1.5rem;
-            font-size: 1.2rem;
-            color: #b3b3b3;
+        .api-section {
+            padding: 1rem;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .nasa-image {
+            position: relative;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.85);
+            color: #e0e0e0;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .nasa-image:hover .tooltip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
+        }
+
+        /* Full-screen overlay for mobile */
+        .fullscreen-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .fullscreen-overlay.active {
+            display: flex;
+        }
+
+        .fullscreen-overlay .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: #444;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 20px;
+            line-height: 30px;
+            text-align: center;
+            cursor: pointer;
         }
 
         .links {
@@ -51,12 +126,11 @@
         }
 
         a {
-            display: inline-block;
             font-size: 1rem;
             padding: 0.75rem 1.5rem;
-            color: #e0e0e0; /* Match text color to body */
-            background-color: #1a1a1a; /* Slightly lighter than the background */
-            border: 1px solid #333333; /* Add a border for distinction */
+            color: #e0e0e0;
+            background-color: #1a1a1a;
+            border: 1px solid #333333;
             border-radius: 4px;
             text-decoration: none;
             transition: all 0.3s ease;
@@ -64,9 +138,9 @@
         }
 
         a:hover {
-            background-color: #2a2a2a; /* Slightly lighter on hover */
-            transform: scale(1.05); /* Slight zoom effect */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+            background-color: #2a2a2a;
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         a:focus {
@@ -79,13 +153,76 @@
 
     <main>
         <div class="container">
-            <p>I'm Zach, a Cybersecurity Engineer. I'm passionate about 3D printing, programming, gaming, and life as a husband and cat dad.</p>
-            <div class="links">
-                <a href="mailto:website@zachvier.com">Contact Me</a>
-                <a href="https://bsky.app/profile/zachvier.com" target="_blank">Bluesky</a>
+            <div class="api-section">
+                <h2>Boston, MA</h2>
+                <p id="weather">Loading weather...</p>
+            </div>
+
+            <div class="api-section">
+                <h2>Cat Fact</h2>
+                <p id="catFact">Loading cat fact...</p>
+            </div>
+
+            <div class="api-section nasa-image">
+                <h2>NASA Photo of the Day</h2>
+                <img id="nasaImage" src="" alt="NASA Astronomy Picture" style="max-width: 100%;">
+                <div class="tooltip" id="nasaText">Loading...</div>
             </div>
         </div>
+
+        <div class="links">
+            <a href="mailto:tokens-defunct-8f@icloud.com">Contact</a>
+            <a href="https://bsky.app/profile/zachvier.com" target="_blank">Bluesky</a>
+        </div>
     </main>
+
+    <div class="fullscreen-overlay" id="fullscreenOverlay">
+        <button class="close-btn" id="closeOverlay">&times;</button>
+        <div id="fullscreenContent">Loading...</div>
+    </div>
+
+    <script>
+        // Weather API for Boston, MA in Fahrenheit
+        fetch('https://api.openweathermap.org/data/2.5/weather?q=Boston,MA,US&units=imperial&appid=77fec6f287fc47e306bf878476738098')
+            .then(response => response.json())
+            .then(data => {
+                const tempFahrenheit = Math.round(data.main.temp);
+                document.getElementById('weather').textContent = `Temperature: ${tempFahrenheit}°F, ${data.weather[0].description}`;
+            });
+
+        // Cat Fact API
+        fetch('https://catfact.ninja/fact')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('catFact').textContent = data.fact;
+            });
+
+        // NASA API
+        fetch('https://api.nasa.gov/planetary/apod?api_key=uwahJkbpVE5ReUtSfAOt7RgP1tjmtlT9nF5rm7Hr')
+            .then(response => response.json())
+            .then(data => {
+                const image = document.getElementById('nasaImage');
+                const tooltip = document.getElementById('nasaText');
+                const fullscreenContent = document.getElementById('fullscreenContent');
+
+                image.src = data.url;
+                tooltip.innerHTML = `<h3>${data.title}</h3><p>${data.explanation}</p>`;
+                fullscreenContent.innerHTML = `<h3>${data.title}</h3><p>${data.explanation}</p>`;
+            });
+
+        // Mobile overlay logic
+        const image = document.getElementById('nasaImage');
+        const overlay = document.getElementById('fullscreenOverlay');
+        const closeBtn = document.getElementById('closeOverlay');
+
+        image.addEventListener('click', () => {
+            overlay.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            overlay.classList.remove('active');
+        });
+    </script>
 
 </body>
 </html>
