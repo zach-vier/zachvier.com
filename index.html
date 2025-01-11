@@ -115,6 +115,29 @@
             outline: 3px solid #444444;
             outline-offset: 2px;
         }
+
+        .fullscreen-overlay {
+            display: none; /* Ensure it is hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .fullscreen-overlay.active {
+            display: flex; /* Show when active */
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -226,8 +249,18 @@
         const image = document.getElementById('nasaImage');
         const overlay = document.getElementById('fullscreenOverlay');
         const closeBtn = document.getElementById('closeOverlay');
+        const fullscreenContent = document.getElementById('fullscreenContent');
 
         image.addEventListener('click', () => {
+            fullscreenContent.textContent = "Loading..."; // Reset to "Loading..." before fetching new content
+            fetch('https://api.nasa.gov/planetary/apod?api_key=uwahJkbpVE5ReUtSfAOt7RgP1tjmtlT9nF5rm7Hr')
+                .then(response => response.json())
+                .then(data => {
+                    fullscreenContent.innerHTML = `<h3>${data.title}</h3><p>${data.explanation}</p>`;
+                })
+                .catch(error => {
+                    fullscreenContent.textContent = "Error loading content.";
+                });
             overlay.classList.add('active');
         });
 
