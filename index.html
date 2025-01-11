@@ -91,6 +91,7 @@
             display: flex;
             gap: 1rem;
             justify-content: center;
+            margin-top: 2rem;
         }
 
         a {
@@ -135,9 +136,6 @@
         .fullscreen-overlay.active {
             display: flex; /* Show when active */
         }
-
-
-
     </style>
 </head>
 <body>
@@ -166,13 +164,23 @@
                 <img id="pokemonImage" src="" alt="Pokémon" class="pokemon-image">
                 <p id="pokemonType">Type: Loading...</p>
             </div>
-        </div>
 
-        <div class="links">
-            <a href="mailto:tokens-defunct-8f@icloud.com">Contact</a>
-            <a href="https://bsky.app/profile/zachvier.com" target="_blank">Bluesky</a>
+            <div class="api-section">
+                <h2>Got an API suggestion?</h2>
+                <p>Contact me and share your idea!</p>
+                <a href="mailto:tokens-defunct-8f@icloud.com?subject=API%20idea:%20" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background-color: #2a2a2a; color: #e0e0e0; border: none; border-radius: 4px; text-decoration: none; font-weight: bold; transition: all 0.3s;">
+                    Send an Email
+                </a>
+            </div>
         </div>
     </main>
+
+    <!-- Bluesky Button -->
+    <footer>
+        <div class="links">
+            <a href="https://bsky.app/profile/zachvier.com" target="_blank">Bluesky</a>
+        </div>
+    </footer>
 
     <div class="fullscreen-overlay" id="fullscreenOverlay">
         <button class="close-btn" id="closeOverlay">&times;</button>
@@ -181,7 +189,7 @@
 
     <script>
         // Weather API for Boston, MA in Fahrenheit
-        fetch('https://api.openweathermap.org/data/2.5/weather?q=Boston,MA,US&units=imperial&appid=303e32afa97405328ddef868ca4e0cab')
+        fetch('https://api.openweathermap.org/data/2.5/weather?q=Boston,MA,US&units=imperial&appid=77fec6f287fc47e306bf878476738098')
             .then(response => response.json())
             .then(data => {
                 const tempFahrenheit = Math.round(data.main.temp);
@@ -244,29 +252,6 @@
                 document.getElementById('pokemonImage').src = data.sprites.front_default;
                 document.getElementById('pokemonType').textContent = `Type: ${data.types.map(type => type.type.name).join(', ')}`;
             });
-
-        // Mobile overlay logic for NASA
-        const image = document.getElementById('nasaImage');
-        const overlay = document.getElementById('fullscreenOverlay');
-        const closeBtn = document.getElementById('closeOverlay');
-        const fullscreenContent = document.getElementById('fullscreenContent');
-
-        image.addEventListener('click', () => {
-            fullscreenContent.textContent = "Loading..."; // Reset to "Loading..." before fetching new content
-            fetch('https://api.nasa.gov/planetary/apod?api_key=uwahJkbpVE5ReUtSfAOt7RgP1tjmtlT9nF5rm7Hr')
-                .then(response => response.json())
-                .then(data => {
-                    fullscreenContent.innerHTML = `<h3>${data.title}</h3><p>${data.explanation}</p>`;
-                })
-                .catch(error => {
-                    fullscreenContent.textContent = "Error loading content.";
-                });
-            overlay.classList.add('active');
-        });
-
-        closeBtn.addEventListener('click', () => {
-            overlay.classList.remove('active');
-        });
     </script>
 
 </body>
