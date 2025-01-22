@@ -275,5 +275,30 @@
             });
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const nasaImage = document.getElementById('nasaImage');
+            const tooltip = document.getElementById('nasaText');
+
+            // Show tooltip when clicking the image
+            nasaImage.addEventListener('click', function(event) {
+                tooltip.style.opacity = '1';
+                tooltip.style.pointerEvents = 'auto';
+                event.stopPropagation(); // Prevents click from propagating to document
+            });
+
+            // Hide tooltip when clicking anywhere else
+            document.addEventListener('click', function() {
+                tooltip.style.opacity = '0';
+                tooltip.style.pointerEvents = 'none';
+            });
+
+            // Prevent hiding when clicking inside the tooltip
+            tooltip.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        });
+    </script>
+
 </body>
 </html>
